@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+
+    </settings>
+
+    <!--
+        为工程中类在sql映射文件使用时来设置简短别名
+    -->
+    <typeAliases>
+       <!-- <typeAlias type="com.bjpowernode.pojo.Dept" alias="dd"/> -->
+        <!--
+            MyBatis为pojo包下每一个类设置别名，别名是类名首字母小写形式
+            com.bjpowernode.pojo.Dept          dept
+        -->
+        <package name="com.Kingxxh.pojo"/>
+    </typeAliases>
+
+
+
+
+    <!--
+        将数据库连接三要素交给SqlSessionFactory
+    -->
+   <!-- <environments default="one">
+
+       环境变量设置连接数据库三要素给SqlSessionFactory的内置数据库连接池对象使用的。
+       实际开发过程中，一般都是采用第三方提供数据库连接池替换SqlSessionFactory自带
+       因此环境变量就不需要设置
+    </environments>-->
+
+
+    <!--
+       通知SqlSessionFactory，当前工程中SQL映射文件存放位置
+    -->
+   <!-- <mappers>
+        <package name="com.bjpowernode.dao"/>
+        在Spring配置文件中，将dao接口所在包的位置手动交给MapperScannerConfigure
+    </mappers>-->
+
+</configuration>

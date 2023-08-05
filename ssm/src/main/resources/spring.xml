@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+         https://www.springframework.org/schema/context/spring-context.xsd
+
+         http://www.springframework.org/schema/aop
+         https://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <context:component-scan base-package="com.Kingxxh"/>
+    <!--Create Druid connector -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/online_test"/>
+        <property name="username" value="root"/>
+        <property name="password" value="971123"/>
+    </bean>
+
+    <!--
+          3.创建SqlSessionFactoryBean对象，它负责创建SqlsessionFactory对象
+       -->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+    </bean>
+
+    <!--
+       4.创建MapperScannerConfigure对象，它负责创建Dao代理对象并存储到Spring容器对象
+    -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>
+        <property name="basePackage" value="com.Kingxxh.dao"/>
+    </bean>
+
+    <!--
+       5.创建DataSourceTransactionManager对象，为service层提供事务管理
+    -->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource"  ref="dataSource"/>
+    </bean>
+
+    <!--
+       6.为Spring容器对象指明，谁是那个提供事务增强服务的切面类对象
+    -->
+    <tx:advice id="advice" transaction-manager="dataSourceTransactionManager">
+        <tx:attributes>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--
+        7.要求Spring容器申请用于调用DataSourceTransactionManager的代理对象
+    -->
+    <aop:config>
+        <aop:pointcut id="pt1" expression="execution( * com.Kingxxh.service.*.*(..))"/>
+        <aop:advisor advice-ref="advice" pointcut-ref="pt1"/>
+    </aop:config>
+
+    <!--
+       8.创建内部资源视图解决方案对象
+    -->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/jsp/" />
+    <property name="suffix" value=".jsp"  />
+    </bean>
+</beans>
